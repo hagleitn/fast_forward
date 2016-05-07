@@ -141,5 +141,9 @@ difference() {
     cut_xy((plate_width-chip_width)/2, chip_offset, plate_thickness/2+1, chip_width, chip_height, hole_cutout_width, hole_cutout_width, 3, 5);
     
     cut_xy((plate_width-camera_length)/2, camera_cutout_offset, plate_thickness/2+1, camera_length, camera_width, hole_cutout_width, hole_cutout_width, 3, 1);
+    
+    cut_xy(rubber_hole_inside/2,0,plate_thickness/2+1,plate_width-rubber_hole_inside,chip_offset,hole_cutout_width,hole_cutout_width,3,1);
+    
+        cut_xy(rubber_hole_inside/2,camera_cutout_offset+camera_width,plate_thickness/2+1,plate_width-rubber_hole_inside,plate_height-(camera_cutout_offset+camera_width),hole_cutout_width,hole_cutout_width,3,1);
 }
 
