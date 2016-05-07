@@ -16,7 +16,7 @@ recession = 1.5;
 
 camera_length = 22;
 camera_width = 10.5;
-camera_height = 14.0;
+camera_height = 14.1;
 camera_wall = 2;
 
 rubber_hole_inside = 4.5;
@@ -31,7 +31,7 @@ camera_cutout_offset = 50;
 rubber_offset = 28; // center of hole
 
 t_width=6;
-t_height=5;
+t_height=5.1;
 t_cross=2;
 
 module t() {
@@ -99,7 +99,7 @@ difference() {
             union() {
                 cube([plate_width, plate_height, plate_thickness]);
                 difference() {
-                    translate([(plate_width-camera_length)/2, camera_cutout_offset-camera_wall, plate_thickness]) 
+                    translate([(plate_width-camera_length)/2, camera_cutout_offset-camera_wall, plate_thickness-0.1]) 
                         cube([camera_length, camera_wall, camera_height]);
                     
                     cut_xz((plate_width-camera_length)/2, 
@@ -135,7 +135,7 @@ difference() {
             rubber_hole(false);
         translate([plate_width,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0]) 
             rubber_hole(false);
-        translate([plate_width, rubber_offset+t_width/2, 0]) rotate([0,0,-90]) t();
+        translate([plate_width-0.1, rubber_offset+t_width/2, 0]) rotate([0,0,-90]) t();
     }
     
     cut_xy((plate_width-chip_width)/2, chip_offset, plate_thickness/2+1, chip_width, chip_height, hole_cutout_width, hole_cutout_width, 3, 5);

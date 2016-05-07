@@ -2,10 +2,10 @@ $fa = 0.5; // default minimum facet angle is now 0.5
 $fs = 0.5; // default minimum facet size is now 0.5 
 tilt = 15;
 motor_height = 20;
-motor_width = 8.5;
+motor_width = 8.75;
 motor_radius = motor_width/2;
 wall_thickness = 2.5;
-wall_height = 5;
+wall_height = 6;
 motor_distance=80;
 
 module motor_mount(h,r,d,a,solid=false) {
