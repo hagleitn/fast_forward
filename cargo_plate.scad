@@ -56,58 +56,90 @@ module cc() {
     translate([0,1,0]) rotate([90,0,0]) 
         cylinder(h=camera_wall+2, r=hole_cutout_camera/2, center=true, $fn=6);
 }
-cc();
 
-difference() {
-    space_y = (camera_height - 2 * hole_cutout_camera)/3;
-    space_x = (camera_length - 2 * hole_cutout_camera)/3;
+module ccc() {
+    translate([0,0,-1])
+        cylinder(h=plate_thickness+2, r=hole_cutout_width/2, center=true, $fn=6);
+}
+
+module cut_xy(x,y,z,l,w,sx,sy,xs,ys) {
+    // l = xs*sx + (xs+1)*space_x
+    space_x = (l - xs*sx)/(xs+1);
+    space_y = (w - ys*sy)/(ys+1);
     
-    union() {
-        cube([plate_width, plate_height, plate_thickness]);
-        difference() {
-            translate([(plate_width-camera_length)/2, camera_cutout_offset-camera_wall, plate_thickness]) 
-                cube([camera_length, camera_wall, camera_height]);
-            translate([(plate_width)/2, camera_cutout_offset-camera_wall, space_y+hole_cutout_camera/2+plate_thickness])
-                cc();
-            translate([(plate_width)/2, camera_cutout_offset-camera_wall, 2*space_y+1.5*hole_cutout_camera+plate_thickness])
-                cc();
-            
-            translate([(plate_width)/2-(space_x+hole_cutout_camera/2), camera_cutout_offset-camera_wall, space_y+hole_cutout_camera/2+plate_thickness])
-                cc();
-            translate([(plate_width)/2-(space_x+hole_cutout_camera/2), camera_cutout_offset-camera_wall, 2*space_y+1.5*hole_cutout_camera+plate_thickness])
-                cc();
-
-            translate([(plate_width)/2+(space_x+hole_cutout_camera/2), camera_cutout_offset-camera_wall, space_y+hole_cutout_camera/2+plate_thickness])
-                cc();
-            translate([(plate_width)/2+(space_x+hole_cutout_camera/2), camera_cutout_offset-camera_wall, 2*space_y+1.5*hole_cutout_camera+plate_thickness])
-                cc();
-
+    for (i = [1:xs]) {
+        for (j = [1:ys]) {
+            translate([x+i*(space_x+sx)-sx/2,
+                       y+j*(space_y+sy)-sy/2,
+                       z]) ccc();
         }
     }
-    
-    translate([(plate_width-camera_length)/2, camera_cutout_offset, plate_thickness-recession]) 
-        cube([camera_length, camera_width, recession+1]);
-    translate([(plate_width-chip_width)/2, chip_offset, plate_thickness-recession]) 
-        cube([chip_width,chip_height,recession+1]);
-    translate([0,rubber_hole_inside/2+rubber_hole_thickness,0]) 
-        rubber_hole(true);
-    translate([plate_width,rubber_hole_inside/2+rubber_hole_thickness])         
-        rubber_hole(true);
-    translate([0, rubber_offset, 0])         
-        rubber_hole(true);
-    translate([0,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0]) 
-        rubber_hole(true);
-    translate([plate_width,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0])         
-        rubber_hole(true);
-
-
 }
-translate([0,rubber_hole_inside/2+rubber_hole_thickness,0]) rubber_hole();
-translate([plate_width,rubber_hole_inside/2+rubber_hole_thickness]) rubber_hole();
-translate([0, rubber_offset, 0]) rubber_hole(false);
-translate([0,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0]) 
-    rubber_hole(false);
-translate([plate_width,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0]) 
-    rubber_hole(false);
-translate([plate_width, rubber_offset+t_width/2, 0]) rotate([0,0,-90]) t();
+
+module cut_xz(x,y,z,l,w,sx,sz,xs,zs) {
+    // l = xs*sx + (xs+1)*space_x
+    space_x = (l - xs*sx)/(xs+1);
+    space_z = (w - zs*sz)/(zs+1);
+    
+    for (i = [1:xs]) {
+        for (j = [1:zs]) {
+            translate([x+i*(space_x+sx)-sx/2,
+                       y,
+                       z+j*(space_z+sz)-sz/2]) cc();
+        }
+    }
+}
+
+difference() {
+    union() {
+        difference() {
+            space_y = (camera_height - 2 * hole_cutout_camera)/3;
+            space_x = (camera_length - 2 * hole_cutout_camera)/3;
+            
+            union() {
+                cube([plate_width, plate_height, plate_thickness]);
+                difference() {
+                    translate([(plate_width-camera_length)/2, camera_cutout_offset-camera_wall, plate_thickness]) 
+                        cube([camera_length, camera_wall, camera_height]);
+                    
+                    cut_xz((plate_width-camera_length)/2, 
+                            camera_cutout_offset-camera_wall, 
+                            plate_thickness,
+                            camera_length, camera_height,
+                            hole_cutout_camera, hole_cutout_camera,
+                            3, 2);
+                }
+            }
+            
+            translate([(plate_width-camera_length)/2, camera_cutout_offset, plate_thickness-recession]) 
+                cube([camera_length, camera_width, recession+1]);
+            translate([(plate_width-chip_width)/2, chip_offset, plate_thickness-recession]) 
+                cube([chip_width,chip_height,recession+1]);
+            translate([0,rubber_hole_inside/2+rubber_hole_thickness,0]) 
+                rubber_hole(true);
+            translate([plate_width,rubber_hole_inside/2+rubber_hole_thickness])         
+                rubber_hole(true);
+            translate([0, rubber_offset, 0])         
+                rubber_hole(true);
+            translate([0,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0]) 
+                rubber_hole(true);
+            translate([plate_width,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0])         
+                rubber_hole(true);
+        
+        
+        }
+        translate([0,rubber_hole_inside/2+rubber_hole_thickness,0]) rubber_hole();
+        translate([plate_width,rubber_hole_inside/2+rubber_hole_thickness]) rubber_hole();
+        translate([0, rubber_offset, 0]) rubber_hole(false);
+        translate([0,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0]) 
+            rubber_hole(false);
+        translate([plate_width,plate_height-(rubber_hole_inside/2+rubber_hole_thickness),0]) 
+            rubber_hole(false);
+        translate([plate_width, rubber_offset+t_width/2, 0]) rotate([0,0,-90]) t();
+    }
+    
+    cut_xy((plate_width-chip_width)/2, chip_offset, plate_thickness/2+1, chip_width, chip_height, hole_cutout_width, hole_cutout_width, 3, 5);
+    
+    cut_xy((plate_width-camera_length)/2, camera_cutout_offset, plate_thickness/2+1, camera_length, camera_width, hole_cutout_width, hole_cutout_width, 3, 1);
+}
 
