@@ -16,7 +16,7 @@ recession = 1.5;
 
 camera_length = 22;
 camera_width = 10.5;
-camera_height = 14;
+camera_height = 14.0;
 camera_wall = 2;
 
 rubber_hole_inside = 4.5;
@@ -52,11 +52,37 @@ module rubber_hole(solid=false) {
     }
 }
 
+module cc() {
+    translate([0,1,0]) rotate([90,0,0]) 
+        cylinder(h=camera_wall+2, r=hole_cutout_camera/2, center=true, $fn=6);
+}
+cc();
+
 difference() {
+    space_y = (camera_height - 2 * hole_cutout_camera)/3;
+    space_x = (camera_length - 2 * hole_cutout_camera)/3;
+    
     union() {
         cube([plate_width, plate_height, plate_thickness]);
-        translate([(plate_width-camera_length)/2, camera_cutout_offset-camera_wall, plate_thickness]) 
-            cube([camera_length, camera_wall, camera_height]);
+        difference() {
+            translate([(plate_width-camera_length)/2, camera_cutout_offset-camera_wall, plate_thickness]) 
+                cube([camera_length, camera_wall, camera_height]);
+            translate([(plate_width)/2, camera_cutout_offset-camera_wall, space_y+hole_cutout_camera/2+plate_thickness])
+                cc();
+            translate([(plate_width)/2, camera_cutout_offset-camera_wall, 2*space_y+1.5*hole_cutout_camera+plate_thickness])
+                cc();
+            
+            translate([(plate_width)/2-(space_x+hole_cutout_camera/2), camera_cutout_offset-camera_wall, space_y+hole_cutout_camera/2+plate_thickness])
+                cc();
+            translate([(plate_width)/2-(space_x+hole_cutout_camera/2), camera_cutout_offset-camera_wall, 2*space_y+1.5*hole_cutout_camera+plate_thickness])
+                cc();
+
+            translate([(plate_width)/2+(space_x+hole_cutout_camera/2), camera_cutout_offset-camera_wall, space_y+hole_cutout_camera/2+plate_thickness])
+                cc();
+            translate([(plate_width)/2+(space_x+hole_cutout_camera/2), camera_cutout_offset-camera_wall, 2*space_y+1.5*hole_cutout_camera+plate_thickness])
+                cc();
+
+        }
     }
     
     translate([(plate_width-camera_length)/2, camera_cutout_offset, plate_thickness-recession]) 
