@@ -1,12 +1,12 @@
 $fa = 0.5; // default minimum facet angle is now 0.5
 $fs = 0.5; // default minimum facet size is now 0.5 
-tilt = 15;
+tilt = 20;
 motor_height = 20;
 motor_width = 8.75;
 motor_radius = motor_width/2;
 wall_thickness = 2.5;
-wall_height = 6;
-motor_distance=80;
+wall_height = 5.5;
+motor_distance=90;
 
 module motor_mount(h,r,d,a,solid=false) {
     
@@ -97,8 +97,10 @@ module stand(h,w,l,s) {
 }
 
 s = (sin(tilt)*(motor_distance/2))*2+wall_height;
-translate([-s/2,-motor_distance/2,s+2*wall_height-0.5])
-    rotate([90,0,90])
+//translate([-s/2,-motor_distance/2,s+2*wall_height-0.5])
+translate([motor_distance/4,-motor_distance/4,0])
+rotate([-90,0,90])
+    translate([0,-motor_width+1+motor_distance/2,0])
         stand(wall_thickness, wall_height, motor_distance, s);
 
 //translate([0,0,sin(tilt)*(motor_distance/2)])
